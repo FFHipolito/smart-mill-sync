@@ -29,8 +29,9 @@ public sealed class GlobalExceptionHandlerTests
 
         Assert.True(handled);
         Assert.Equal(StatusCodes.Status400BadRequest, httpContext.Response.StatusCode);
-        Assert.Equal("Validation failed", writtenContext!.ProblemDetails.Title);
-        Assert.True(writtenContext.ProblemDetails.Extensions.ContainsKey("errors"));
+        var validationProblem = Assert.IsType<ValidationProblemDetails>(writtenContext!.ProblemDetails);
+        Assert.Equal("Validation failed", validationProblem.Title);
+        Assert.Equal("Invalid plate.", Assert.Single(validationProblem.Errors["TruckPlate"]));
     }
 
     [Fact]
