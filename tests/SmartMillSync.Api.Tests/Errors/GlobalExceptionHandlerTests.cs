@@ -54,4 +54,26 @@ public sealed class GlobalExceptionHandlerTests
         Assert.Equal(StatusCodes.Status503ServiceUnavailable, httpContext.Response.StatusCode);
         Assert.Equal("Industrial agent unavailable", writtenContext!.ProblemDetails.Title);
     }
+
+    [Fact]
+    public async Task TryHandleAsync_WhenGeminiIsOverloaded_WritesServiceUnavailable()
+    {
+        var problemDetails = Substitute.For<IProblemDetailsService>();
+        ProblemDetailsContext? writtenContext = null;
+        problemDetails.TryWriteAsync(Arg.Do<ProblemDetailsContext>(context => writtenContext = context))
+            .Returns(ValueTask.FromResult(true));
+        var handler = new GlobalExceptionHandler(
+            problemDetails,
+            NullLogger<GlobalExceptionHandler>.Instance);
+        var httpContext = new DefaultHttpContext();
+
+        var handled = await handler.TryHandleAsync(
+            httpContext,
+            new GeminiRequestException("High demand.", System.Net.HttpStatusCode.ServiceUnavailable),
+            CancellationToken.None);
+
+        Assert.True(handled);
+        Assert.Equal(StatusCodes.Status503ServiceUnavailable, httpContext.Response.StatusCode);
+        Assert.Equal("Gemini temporarily unavailable", writtenContext!.ProblemDetails.Title);
+    }
 }

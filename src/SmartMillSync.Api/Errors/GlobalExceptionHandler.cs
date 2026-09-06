@@ -40,6 +40,12 @@ public sealed class GlobalExceptionHandler(
                 StatusCodes.Status503ServiceUnavailable,
                 "Industrial agent unavailable",
                 new Dictionary<string, object?>()),
+            GeminiRequestException geminiException when
+                geminiException.StatusCode is System.Net.HttpStatusCode.TooManyRequests or
+                    System.Net.HttpStatusCode.ServiceUnavailable => (
+                StatusCodes.Status503ServiceUnavailable,
+                "Gemini temporarily unavailable",
+                new Dictionary<string, object?>()),
             _ => (
                 StatusCodes.Status500InternalServerError,
                 "An unexpected error occurred",
