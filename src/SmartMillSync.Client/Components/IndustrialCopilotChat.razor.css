@@ -240,7 +240,8 @@
     .copilot-shell {
         right: 10px;
         bottom: 10px;
-        width: calc(100vw - 20px);
+        left: 10px;
+        width: auto;
     }
 
     .copilot-panel {
