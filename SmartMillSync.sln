@@ -1,0 +1,62 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0AF51E06-C24F-420D-9491-8B5ADC5AAC63}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartMillSync.Domain", "src\SmartMillSync.Domain\SmartMillSync.Domain.csproj", "{99B71E71-28D4-4F15-B95E-F00C33009EEB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartMillSync.Application", "src\SmartMillSync.Application\SmartMillSync.Application.csproj", "{D98F2FFA-9B49-4064-8AF0-0FC163644171}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartMillSync.Infrastructure", "src\SmartMillSync.Infrastructure\SmartMillSync.Infrastructure.csproj", "{1846CE9D-86C8-4F04-AC89-1B416F51A22C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartMillSync.Shared", "src\SmartMillSync.Shared\SmartMillSync.Shared.csproj", "{956BC42C-B31B-4590-A41B-4E59F0B2BC02}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartMillSync.Api", "src\SmartMillSync.Api\SmartMillSync.Api.csproj", "{02B326EE-8803-4003-A1AC-A6BF18829D4A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartMillSync.Client", "src\SmartMillSync.Client\SmartMillSync.Client.csproj", "{1A0921CA-B28B-4AD9-B692-633E5639F7B7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{99B71E71-28D4-4F15-B95E-F00C33009EEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99B71E71-28D4-4F15-B95E-F00C33009EEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99B71E71-28D4-4F15-B95E-F00C33009EEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99B71E71-28D4-4F15-B95E-F00C33009EEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D98F2FFA-9B49-4064-8AF0-0FC163644171}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D98F2FFA-9B49-4064-8AF0-0FC163644171}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D98F2FFA-9B49-4064-8AF0-0FC163644171}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D98F2FFA-9B49-4064-8AF0-0FC163644171}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1846CE9D-86C8-4F04-AC89-1B416F51A22C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1846CE9D-86C8-4F04-AC89-1B416F51A22C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1846CE9D-86C8-4F04-AC89-1B416F51A22C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1846CE9D-86C8-4F04-AC89-1B416F51A22C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{956BC42C-B31B-4590-A41B-4E59F0B2BC02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{956BC42C-B31B-4590-A41B-4E59F0B2BC02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{956BC42C-B31B-4590-A41B-4E59F0B2BC02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{956BC42C-B31B-4590-A41B-4E59F0B2BC02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02B326EE-8803-4003-A1AC-A6BF18829D4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02B326EE-8803-4003-A1AC-A6BF18829D4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02B326EE-8803-4003-A1AC-A6BF18829D4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02B326EE-8803-4003-A1AC-A6BF18829D4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A0921CA-B28B-4AD9-B692-633E5639F7B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A0921CA-B28B-4AD9-B692-633E5639F7B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A0921CA-B28B-4AD9-B692-633E5639F7B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A0921CA-B28B-4AD9-B692-633E5639F7B7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{99B71E71-28D4-4F15-B95E-F00C33009EEB} = {0AF51E06-C24F-420D-9491-8B5ADC5AAC63}
+		{D98F2FFA-9B49-4064-8AF0-0FC163644171} = {0AF51E06-C24F-420D-9491-8B5ADC5AAC63}
+		{1846CE9D-86C8-4F04-AC89-1B416F51A22C} = {0AF51E06-C24F-420D-9491-8B5ADC5AAC63}
+		{956BC42C-B31B-4590-A41B-4E59F0B2BC02} = {0AF51E06-C24F-420D-9491-8B5ADC5AAC63}
+		{02B326EE-8803-4003-A1AC-A6BF18829D4A} = {0AF51E06-C24F-420D-9491-8B5ADC5AAC63}
+		{1A0921CA-B28B-4AD9-B692-633E5639F7B7} = {0AF51E06-C24F-420D-9491-8B5ADC5AAC63}
+	EndGlobalSection
+EndGlobal
