@@ -1,6 +1,7 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using SmartMillSync.Api.Services;
 
 namespace SmartMillSync.Api.Errors;
 
@@ -30,6 +31,14 @@ public sealed class GlobalExceptionHandler(
             ArgumentException => (
                 StatusCodes.Status400BadRequest,
                 "Invalid request",
+                new Dictionary<string, object?>()),
+            KeyNotFoundException => (
+                StatusCodes.Status404NotFound,
+                "Resource not found",
+                new Dictionary<string, object?>()),
+            IndustrialAgentUnavailableException => (
+                StatusCodes.Status503ServiceUnavailable,
+                "Industrial agent unavailable",
                 new Dictionary<string, object?>()),
             _ => (
                 StatusCodes.Status500InternalServerError,
