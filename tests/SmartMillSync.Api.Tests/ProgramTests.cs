@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SmartMillSync.Api.Hubs;
 using SmartMillSync.Application.Abstractions;
+using SmartMillSync.Application.Agents;
 using SmartMillSync.Infrastructure.Persistence;
 using Xunit;
 
@@ -23,6 +24,8 @@ public sealed class ProgramTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.NotNull(scope.ServiceProvider.GetService<ISender>());
         Assert.NotNull(scope.ServiceProvider.GetService<IWoodDeliveryRepository>());
         Assert.NotNull(scope.ServiceProvider.GetService<ISignalRNotificationService>());
+        Assert.NotNull(scope.ServiceProvider.GetService<IIndustrialAgentService>());
+        Assert.NotNull(scope.ServiceProvider.GetService<IIndustrialAgentChatGateway>());
         Assert.NotNull(scope.ServiceProvider.GetService<SmartMillDbContext>());
     }
 

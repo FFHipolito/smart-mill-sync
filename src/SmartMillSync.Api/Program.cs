@@ -1,6 +1,7 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using SmartMillSync.Api.Configuration;
 using SmartMillSync.Api.Errors;
 using SmartMillSync.Api.Hubs;
 using SmartMillSync.Api.Services;
@@ -26,6 +27,7 @@ builder.Services.AddMediatR(configuration =>
     configuration.RegisterServicesFromAssemblyContaining<RegisterWoodDeliveryCommand>());
 builder.Services.AddValidatorsFromAssemblyContaining<RegisterWoodDeliveryCommand>();
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+builder.Services.AddIndustrialAgent(builder.Configuration);
 
 var connectionString = builder.Configuration.GetConnectionString("SmartMillDb")
     ?? throw new InvalidOperationException("Connection string 'SmartMillDb' is required.");
