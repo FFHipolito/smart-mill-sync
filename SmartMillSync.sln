@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartMillSync.Application.T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartMillSync.Infrastructure.Tests", "tests\SmartMillSync.Infrastructure.Tests\SmartMillSync.Infrastructure.Tests.csproj", "{247A028F-8204-424D-B190-57AF7F834902}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartMillSync.Api.Tests", "tests\SmartMillSync.Api.Tests\SmartMillSync.Api.Tests.csproj", "{9695927B-66AC-49CC-B71D-BA0A8FE38B6E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -76,6 +78,10 @@ Global
 		{247A028F-8204-424D-B190-57AF7F834902}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{247A028F-8204-424D-B190-57AF7F834902}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{247A028F-8204-424D-B190-57AF7F834902}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9695927B-66AC-49CC-B71D-BA0A8FE38B6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9695927B-66AC-49CC-B71D-BA0A8FE38B6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9695927B-66AC-49CC-B71D-BA0A8FE38B6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9695927B-66AC-49CC-B71D-BA0A8FE38B6E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{99B71E71-28D4-4F15-B95E-F00C33009EEB} = {0AF51E06-C24F-420D-9491-8B5ADC5AAC63}
@@ -88,5 +94,6 @@ Global
 		{72BC40B9-32F7-4C09-A569-28A6E02D64E0} = {96494DA5-360A-486C-BDE0-D56661572A27}
 		{F12CA4DE-AC02-49A5-B951-3894A7B13FA3} = {96494DA5-360A-486C-BDE0-D56661572A27}
 		{247A028F-8204-424D-B190-57AF7F834902} = {96494DA5-360A-486C-BDE0-D56661572A27}
+		{9695927B-66AC-49CC-B71D-BA0A8FE38B6E} = {96494DA5-360A-486C-BDE0-D56661572A27}
 	EndGlobalSection
 EndGlobal
