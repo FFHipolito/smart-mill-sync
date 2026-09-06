@@ -18,7 +18,14 @@ public sealed class YardOverviewStylesTests
         Assert.Contains("grid-template-columns: repeat(4", content);
         Assert.Contains("table-layout: fixed", content);
         Assert.Contains("@media (max-width: 620px)", content);
-        Assert.Contains(".modal-backdrop", content);
+        Assert.Contains("width: min(420px, 66.667vw)", content);
+        Assert.Contains("margin-inline: auto", content);
+        Assert.Contains("padding-top: 12px", content);
+        Assert.Contains("padding: 16px 0", content);
+        Assert.Contains("form footer .primary-action", content);
+        Assert.Contains("justify-content: center", content);
+        Assert.Contains("text-align: center", content);
+        Assert.Contains("flex: 1 1 0", content);
     }
 
     private static string FindRepositoryRoot()

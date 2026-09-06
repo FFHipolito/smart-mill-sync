@@ -15,6 +15,9 @@ coverage/
 *.coverage
 *.coveragexml
 
+# Local drafts and specifications
+/rascunho/
+
 # Local environment and secrets
 .env
 .env.*
