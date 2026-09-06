@@ -198,7 +198,7 @@ h1 {
 
 table {
     width: 100%;
-    min-width: 920px;
+    min-width: 1080px;
     border-collapse: collapse;
     table-layout: fixed;
 }
@@ -264,6 +264,23 @@ td small {
     border: 1px solid #3b4941;
     color: #b6c1ba;
     font-size: 0.63rem;
+}
+
+.ai-diagnose {
+    min-height: 28px;
+    padding: 4px 8px;
+    background: transparent;
+    border: 1px solid #55c878;
+    border-radius: 2px;
+    color: #79d793;
+    cursor: pointer;
+    font-size: 0.61rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.ai-diagnose:hover {
+    background: #24352b;
 }
 
 .table-state {

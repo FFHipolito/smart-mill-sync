@@ -16,6 +16,7 @@ public sealed class YardOverviewTests : TestContext
     {
         var api = Substitute.For<IMillApiClient>();
         var realtime = Substitute.For<IMillRealtimeClient>();
+        var agent = Substitute.For<IIndustrialAgentApiClient>();
         var delivery = new WoodDeliveryResponse(
             Guid.NewGuid(), "ABC1D23", "Mucuri-04", "Eucalyptus Urograndis",
             50m, 10m, 40m, 55m, 18m, DeliveryStatus.ArrivedAtGate, true, 770m,
@@ -26,6 +27,7 @@ public sealed class YardOverviewTests : TestContext
             .Returns(new EnergyBalanceSummaryDto(1, 40m, 18m, 770m, 55m, AlertLevel.High));
         Services.AddSingleton(api);
         Services.AddSingleton(realtime);
+        Services.AddSingleton(agent);
         JSInterop.Mode = JSRuntimeMode.Loose;
         RenderFragment pageMarkup = builder =>
         {
@@ -40,6 +42,8 @@ public sealed class YardOverviewTests : TestContext
             Assert.Contains("Mucuri-04", page.Markup);
             Assert.Contains("770", page.Markup);
             Assert.Contains("alert-high", page.Markup);
+            Assert.Contains("Diagnosticar com IA", page.Markup);
+            Assert.Contains("Oraculo Industrial", page.Markup);
         });
 
         page.Find("button.primary-action").Click();
@@ -53,10 +57,12 @@ public sealed class YardOverviewTests : TestContext
     {
         var api = Substitute.For<IMillApiClient>();
         var realtime = Substitute.For<IMillRealtimeClient>();
+        var agent = Substitute.For<IIndustrialAgentApiClient>();
         api.GetActiveDeliveriesAsync(Arg.Any<CancellationToken>())
             .Returns<IReadOnlyList<WoodDeliveryResponse>>(_ => throw new HttpRequestException());
         Services.AddSingleton(api);
         Services.AddSingleton(realtime);
+        Services.AddSingleton(agent);
         RenderFragment pageMarkup = builder =>
         {
             builder.OpenComponent<YardOverview>(0);

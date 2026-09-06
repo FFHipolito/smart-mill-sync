@@ -21,5 +21,7 @@ public sealed class ClientServiceRegistrationTests
         Assert.NotNull(scope.ServiceProvider.GetService<IMillApiClient>());
         Assert.NotNull(scope.ServiceProvider.GetService<MillRealtimeClient>());
         Assert.NotNull(scope.ServiceProvider.GetService<IMillRealtimeClient>());
+        Assert.NotNull(scope.ServiceProvider.GetService<IndustrialAgentApiClient>());
+        Assert.NotNull(scope.ServiceProvider.GetService<IIndustrialAgentApiClient>());
     }
 }
