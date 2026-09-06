@@ -1,13 +1,42 @@
+using FluentValidation;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using SmartMillSync.Api.Errors;
+using SmartMillSync.Api.Hubs;
+using SmartMillSync.Api.Services;
+using SmartMillSync.Application.Abstractions;
+using SmartMillSync.Application.Behaviors;
+using SmartMillSync.Application.Deliveries.Commands;
+using SmartMillSync.Infrastructure.Persistence;
+using SmartMillSync.Infrastructure.Persistence.Repositories;
+using SmartMillSync.Infrastructure.Workers;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSignalR();
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddCors(options => options.AddPolicy("BlazorClient", policy =>
+    policy.AllowAnyHeader().AllowAnyMethod().AllowCredentials().SetIsOriginAllowed(_ => true)));
+
+builder.Services.AddMediatR(configuration =>
+    configuration.RegisterServicesFromAssemblyContaining<RegisterWoodDeliveryCommand>());
+builder.Services.AddValidatorsFromAssemblyContaining<RegisterWoodDeliveryCommand>();
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+
+var connectionString = builder.Configuration.GetConnectionString("SmartMillDb")
+    ?? throw new InvalidOperationException("Connection string 'SmartMillDb' is required.");
+builder.Services.AddDbContext<SmartMillDbContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddScoped<IWoodDeliveryRepository, WoodDeliveryRepository>();
+builder.Services.AddScoped<ISignalRNotificationService, SignalRNotificationService>();
+builder.Services.AddHostedService<ThermalBalanceWorker>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.UseExceptionHandler();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -15,30 +44,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
+app.UseCors("BlazorClient");
+app.MapControllers();
+app.MapHub<MillSyncHub>("/hubs/mill-sync");
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+public partial class Program;
+
