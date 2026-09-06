@@ -1,15 +1,23 @@
 ﻿@inherits LayoutComponentBase
-<div class="page">
-    <div class="sidebar">
+
+<div class="app-shell">
+    <aside class="sidebar">
         <NavMenu />
-    </div>
+    </aside>
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+    <main class="workspace">
+        <header class="command-bar">
+            <div>
+                <span class="plant-label">UNIDADE INDUSTRIAL</span>
+                <strong>Centro de controle de biomassa</strong>
+            </div>
+            <div class="system-state" title="Servicos operacionais disponiveis">
+                <span class="pulse"></span>
+                Operacao ativa
+            </div>
+        </header>
 
-        <article class="content px-4">
+        <article class="content">
             @Body
         </article>
     </main>

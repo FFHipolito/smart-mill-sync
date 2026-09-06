@@ -1,39 +1,27 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">SmartMillSync.Client</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+﻿<div class="brand-block">
+    <a class="brand" href="" aria-label="Smart Mill Sync">
+        <span class="brand-mark">SM</span>
+        <span>
+            <strong>SMART MILL</strong>
+            <small>SYNC / INDUSTRIAL</small>
+        </span>
+    </a>
+</div>
+
+<nav class="primary-nav" aria-label="Navegacao principal">
+    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+        <span class="nav-icon" aria-hidden="true">Y</span>
+        <span>
+            <strong>Patio de madeira</strong>
+            <small>Fluxo e energia</small>
+        </span>
+    </NavLink>
+</nav>
+
+<div class="sidebar-footer">
+    <span class="footer-label">INTEGRACOES</span>
+    <div class="integration-row">
+        <span class="integration-dot"></span>
+        MLPlan / Programacao GN
     </div>
 </div>
-
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-    </nav>
-</div>
-
-@code {
-    private bool collapseNavMenu = true;
-
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
-}
