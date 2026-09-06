@@ -8,6 +8,7 @@ using Xunit;
 
 namespace SmartMillSync.Api.Tests.Configuration;
 
+[Collection("Environment variables")]
 public sealed class IndustrialAgentServiceRegistrationTests
 {
     [Fact]

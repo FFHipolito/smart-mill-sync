@@ -58,15 +58,27 @@ public sealed class GlobalExceptionHandler(
         }
 
         httpContext.Response.StatusCode = statusCode;
-        return await problemDetailsService.TryWriteAsync(new ProblemDetailsContext
-        {
-            HttpContext = httpContext,
-            ProblemDetails = new ProblemDetails
+        var problemDetails = exception is ValidationException validationFailure
+            ? new ValidationProblemDetails(
+                validationFailure.Errors
+                    .GroupBy(error => error.PropertyName)
+                    .ToDictionary(
+                        group => group.Key,
+                        group => group.Select(error => error.ErrorMessage).ToArray()))
+                {
+                    Status = statusCode,
+                    Title = title
+                }
+            : new ProblemDetails
             {
                 Status = statusCode,
                 Title = title,
                 Extensions = extensions
-            },
+            };
+        return await problemDetailsService.TryWriteAsync(new ProblemDetailsContext
+        {
+            HttpContext = httpContext,
+            ProblemDetails = problemDetails,
             Exception = exception
         });
     }
