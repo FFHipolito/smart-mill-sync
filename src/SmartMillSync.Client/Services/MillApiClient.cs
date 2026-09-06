@@ -3,7 +3,16 @@ using SmartMillSync.Shared.DTOs;
 
 namespace SmartMillSync.Client.Services;
 
-public sealed class MillApiClient(HttpClient httpClient)
+public interface IMillApiClient
+{
+    Task<IReadOnlyList<WoodDeliveryResponse>> GetActiveDeliveriesAsync(CancellationToken cancellationToken = default);
+    Task<EnergyBalanceSummaryDto> GetEnergyBalanceAsync(CancellationToken cancellationToken = default);
+    Task<WoodDeliveryResponse> RegisterDeliveryAsync(
+        CreateWoodDeliveryRequest request,
+        CancellationToken cancellationToken = default);
+}
+
+public sealed class MillApiClient(HttpClient httpClient) : IMillApiClient
 {
     public async Task<IReadOnlyList<WoodDeliveryResponse>> GetActiveDeliveriesAsync(
         CancellationToken cancellationToken = default) =>

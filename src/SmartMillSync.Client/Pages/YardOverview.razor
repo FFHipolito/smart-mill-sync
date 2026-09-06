@@ -1,0 +1,341 @@
+@page "/"
+@implements IDisposable
+@using System.ComponentModel.DataAnnotations
+@using SmartMillSync.Client.Services
+@using SmartMillSync.Shared.DTOs
+@inject IMillApiClient ApiClient
+@inject IMillRealtimeClient RealtimeClient
+
+<PageTitle>Patio de madeira | Smart Mill Sync</PageTitle>
+
+<section class="page-heading">
+    <div>
+        <span class="eyebrow">SINCRONISMO FLORESTA / INDUSTRIA</span>
+        <h1>Patio de madeira</h1>
+        <p>Recebimento de cargas e impacto energetico em tempo real.</p>
+    </div>
+    <button type="button" class="primary-action" @onclick="OpenForm">
+        <span aria-hidden="true">+</span>
+        Registrar chegada
+    </button>
+</section>
+
+@if (_errorMessage is not null)
+{
+    <div class="error-banner" role="alert">
+        <span>@_errorMessage</span>
+        <button type="button" @onclick="LoadAsync">Tentar novamente</button>
+    </div>
+}
+
+<section class="kpi-strip" aria-label="Indicadores do turno">
+    <article class="kpi-block">
+        <span class="kpi-label">MADEIRA RECEBIDA</span>
+        <strong>@FormatNumber(_summary.TotalNetWeightTons)</strong>
+        <small>toneladas liquidas hoje</small>
+    </article>
+    <article class="kpi-block">
+        <span class="kpi-label">UMIDADE MEDIA</span>
+        <strong>@FormatNumber(_summary.AverageMoisturePercentage)<span>%</span></strong>
+        <small>referencia termica: 50%</small>
+    </article>
+    <article class="kpi-block @AlertCss(_summary.AlertLevel)">
+        <span class="kpi-label">COMPENSACAO GN</span>
+        <strong>@FormatNumber(_summary.EstimatedAdditionalGasNm3)<span> Nm3</span></strong>
+        <small>@AlertDescription(_summary.AlertLevel)</small>
+    </article>
+    <article class="kpi-block">
+        <span class="kpi-label">BIOMASSA SECA</span>
+        <strong>@FormatNumber(_summary.AccumulatedDryBiomassTons)</strong>
+        <small>toneladas disponiveis</small>
+    </article>
+</section>
+
+<section class="operations-panel">
+    <header class="panel-header">
+        <div>
+            <h2>Chegadas ativas</h2>
+            <span>@_deliveries.Count cargas em acompanhamento</span>
+        </div>
+        <span class="live-indicator"><i></i> AO VIVO</span>
+    </header>
+
+    @if (_isLoading)
+    {
+        <div class="table-state">Carregando dados operacionais...</div>
+    }
+    else if (_deliveries.Count == 0)
+    {
+        <div class="table-state">
+            <strong>Nenhuma carga ativa</strong>
+            <span>Novas chegadas aparecerao aqui automaticamente.</span>
+        </div>
+    }
+    else
+    {
+        <div class="table-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th>CHEGADA</th>
+                        <th>VEICULO</th>
+                        <th>ORIGEM / ESPECIE</th>
+                        <th>PESO LIQ.</th>
+                        <th>UMIDADE</th>
+                        <th>IMPACTO GN</th>
+                        <th>STATUS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var delivery in _deliveries)
+                    {
+                        <tr>
+                            <td>@delivery.ArrivedAtUtc.ToLocalTime().ToString("HH:mm")</td>
+                            <td><strong class="plate">@delivery.TruckPlate</strong></td>
+                            <td>
+                                <strong>@delivery.ForestOrigin</strong>
+                                <small>@delivery.WoodSpecies</small>
+                            </td>
+                            <td>@FormatNumber(delivery.NetWeight) t</td>
+                            <td><span class="moisture @AlertCss(delivery.AlertLevel)">@FormatNumber(delivery.MoisturePercentage)%</span></td>
+                            <td>@FormatNumber(delivery.ExtraGasVolume) Nm3</td>
+                            <td><span class="status">@StatusLabel(delivery.Status)</span></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>
+
+@if (_isFormOpen)
+{
+    <div class="modal-backdrop" role="presentation" @onclick="CloseForm">
+        <section class="arrival-modal" role="dialog" aria-modal="true" aria-labelledby="arrival-title" @onclick:stopPropagation="true">
+            <header>
+                <div>
+                    <span class="eyebrow">PORTARIA INDUSTRIAL</span>
+                    <h2 id="arrival-title">Registrar chegada</h2>
+                </div>
+                <button type="button" class="icon-button" title="Fechar" aria-label="Fechar" @onclick="CloseForm">X</button>
+            </header>
+
+            <EditForm Model="_form" OnValidSubmit="SubmitAsync">
+                <DataAnnotationsValidator />
+                <div class="form-grid">
+                    <label>
+                        <span>Placa do veiculo</span>
+                        <InputText @bind-Value="_form.TruckPlate" placeholder="ABC1D23" />
+                        <ValidationMessage For="@(() => _form.TruckPlate)" />
+                    </label>
+                    <label>
+                        <span>Origem florestal</span>
+                        <InputText @bind-Value="_form.ForestOrigin" placeholder="Modulo Mucuri-04" />
+                        <ValidationMessage For="@(() => _form.ForestOrigin)" />
+                    </label>
+                    <label class="wide-field">
+                        <span>Especie</span>
+                        <InputText @bind-Value="_form.WoodSpecies" placeholder="Eucalyptus Urograndis" />
+                        <ValidationMessage For="@(() => _form.WoodSpecies)" />
+                    </label>
+                    <label>
+                        <span>Peso bruto (t)</span>
+                        <InputNumber @bind-Value="_form.GrossWeight" />
+                        <ValidationMessage For="@(() => _form.GrossWeight)" />
+                    </label>
+                    <label>
+                        <span>Tara (t)</span>
+                        <InputNumber @bind-Value="_form.TareWeight" />
+                        <ValidationMessage For="@(() => _form.TareWeight)" />
+                    </label>
+                    <label class="wide-field">
+                        <span>Umidade medida (%)</span>
+                        <InputNumber @bind-Value="_form.MoisturePercentage" />
+                        <ValidationMessage For="@(() => _form.MoisturePercentage)" />
+                    </label>
+                </div>
+                @if (_submitError is not null)
+                {
+                    <p class="submit-error" role="alert">@_submitError</p>
+                }
+                <footer>
+                    <button type="button" class="secondary-action" @onclick="CloseForm">Cancelar</button>
+                    <button type="submit" class="primary-action" disabled="@_isSubmitting">
+                        @(_isSubmitting ? "Registrando..." : "Confirmar chegada")
+                    </button>
+                </footer>
+            </EditForm>
+        </section>
+    </div>
+}
+
+@code {
+    private readonly List<WoodDeliveryResponse> _deliveries = [];
+    private readonly CancellationTokenSource _lifetime = new();
+    private EnergyBalanceSummaryDto _summary = new(0, 0m, 0m, 0m, 0m, AlertLevel.Normal);
+    private ArrivalFormModel _form = new();
+    private bool _isLoading = true;
+    private bool _isFormOpen;
+    private bool _isSubmitting;
+    private string? _errorMessage;
+    private string? _submitError;
+
+    protected override async Task OnInitializedAsync()
+    {
+        RealtimeClient.DeliveryUpdated += OnDeliveryUpdatedAsync;
+        RealtimeClient.EnergyBalanceUpdated += OnEnergyBalanceUpdatedAsync;
+        await LoadAsync();
+
+        try
+        {
+            await RealtimeClient.StartAsync(_lifetime.Token);
+        }
+        catch (Exception)
+        {
+            _errorMessage = "Dados carregados, mas o canal em tempo real esta indisponivel.";
+        }
+    }
+
+    private async Task LoadAsync()
+    {
+        _isLoading = true;
+        _errorMessage = null;
+
+        try
+        {
+            var deliveriesTask = ApiClient.GetActiveDeliveriesAsync(_lifetime.Token);
+            var summaryTask = ApiClient.GetEnergyBalanceAsync(_lifetime.Token);
+            await Task.WhenAll(deliveriesTask, summaryTask);
+            _deliveries.Clear();
+            _deliveries.AddRange(await deliveriesTask);
+            _summary = await summaryTask;
+        }
+        catch (Exception) when (!_lifetime.IsCancellationRequested)
+        {
+            _errorMessage = "Nao foi possivel consultar a operacao. Verifique a API industrial.";
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private void OpenForm()
+    {
+        _form = new ArrivalFormModel();
+        _submitError = null;
+        _isFormOpen = true;
+    }
+
+    private void CloseForm() => _isFormOpen = false;
+
+    private async Task SubmitAsync()
+    {
+        if (_form.TareWeight >= _form.GrossWeight)
+        {
+            _submitError = "A tara deve ser menor que o peso bruto.";
+            return;
+        }
+
+        _isSubmitting = true;
+        _submitError = null;
+
+        try
+        {
+            var delivery = await ApiClient.RegisterDeliveryAsync(
+                new CreateWoodDeliveryRequest(
+                    _form.TruckPlate,
+                    _form.ForestOrigin,
+                    _form.WoodSpecies,
+                    _form.GrossWeight,
+                    _form.TareWeight,
+                    _form.MoisturePercentage),
+                _lifetime.Token);
+            UpsertDelivery(delivery);
+            _isFormOpen = false;
+            _summary = await ApiClient.GetEnergyBalanceAsync(_lifetime.Token);
+        }
+        catch (Exception)
+        {
+            _submitError = "A chegada nao foi registrada. Revise os dados e tente novamente.";
+        }
+        finally
+        {
+            _isSubmitting = false;
+        }
+    }
+
+    private Task OnDeliveryUpdatedAsync(WoodDeliveryResponse delivery) => InvokeAsync(() =>
+    {
+        UpsertDelivery(delivery);
+        StateHasChanged();
+    });
+
+    private Task OnEnergyBalanceUpdatedAsync(EnergyBalanceSummaryDto summary) => InvokeAsync(() =>
+    {
+        _summary = summary;
+        StateHasChanged();
+    });
+
+    private void UpsertDelivery(WoodDeliveryResponse delivery)
+    {
+        _deliveries.RemoveAll(item => item.Id == delivery.Id);
+        _deliveries.Insert(0, delivery);
+    }
+
+    private static string FormatNumber(decimal value) => value.ToString("N1");
+
+    private static string AlertCss(AlertLevel level) => level switch
+    {
+        AlertLevel.High => "alert-high",
+        AlertLevel.Moderate => "alert-moderate",
+        _ => "alert-normal"
+    };
+
+    private static string AlertDescription(AlertLevel level) => level switch
+    {
+        AlertLevel.High => "alerta critico de consumo",
+        AlertLevel.Moderate => "compensacao em observacao",
+        _ => "sem demanda adicional"
+    };
+
+    private static string StatusLabel(DeliveryStatus status) => status switch
+    {
+        DeliveryStatus.InTransit => "Em transito",
+        DeliveryStatus.ArrivedAtGate => "Na portaria",
+        DeliveryStatus.Weighed => "Pesado",
+        DeliveryStatus.Unloading => "Descarregando",
+        DeliveryStatus.Completed => "Concluido",
+        DeliveryStatus.Rejected => "Rejeitado",
+        _ => status.ToString()
+    };
+
+    public void Dispose()
+    {
+        RealtimeClient.DeliveryUpdated -= OnDeliveryUpdatedAsync;
+        RealtimeClient.EnergyBalanceUpdated -= OnEnergyBalanceUpdatedAsync;
+        _lifetime.Cancel();
+        _lifetime.Dispose();
+    }
+
+    private sealed class ArrivalFormModel
+    {
+        [Required, RegularExpression("^[A-Za-z]{3}-?[0-9][A-Za-z0-9][0-9]{2}$")]
+        public string TruckPlate { get; set; } = string.Empty;
+
+        [Required, StringLength(160)]
+        public string ForestOrigin { get; set; } = string.Empty;
+
+        [Required, StringLength(120)]
+        public string WoodSpecies { get; set; } = string.Empty;
+
+        [Range(0.01, 100)]
+        public decimal GrossWeight { get; set; } = 50m;
+
+        [Range(0, 99.99)]
+        public decimal TareWeight { get; set; } = 15m;
+
+        [Range(10, 70)]
+        public decimal MoisturePercentage { get; set; } = 45m;
+    }
+}

@@ -10,6 +10,12 @@ namespace SmartMillSync.Client.Tests.Services;
 public sealed class MillApiClientTests
 {
     [Fact]
+    public void Client_ImplementsTypedContract()
+    {
+        Assert.True(typeof(IMillApiClient).IsAssignableFrom(typeof(MillApiClient)));
+    }
+
+    [Fact]
     public async Task GetActiveDeliveriesAsync_DeserializesApiResponse()
     {
         var expected = CreateResponse();

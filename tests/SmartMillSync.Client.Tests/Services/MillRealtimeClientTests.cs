@@ -6,6 +6,12 @@ namespace SmartMillSync.Client.Tests.Services;
 public sealed class MillRealtimeClientTests
 {
     [Fact]
+    public void Client_ImplementsTypedContract()
+    {
+        Assert.True(typeof(IMillRealtimeClient).IsAssignableFrom(typeof(MillRealtimeClient)));
+    }
+
+    [Fact]
     public async Task Constructor_WithApiBaseAddress_CreatesDisposableClient()
     {
         var httpClient = new HttpClient { BaseAddress = new Uri("http://localhost:5243/") };

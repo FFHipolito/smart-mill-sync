@@ -18,6 +18,8 @@ public sealed class ClientServiceRegistrationTests
             new Uri("http://localhost:5243/"),
             scope.ServiceProvider.GetRequiredService<HttpClient>().BaseAddress);
         Assert.NotNull(scope.ServiceProvider.GetService<MillApiClient>());
+        Assert.NotNull(scope.ServiceProvider.GetService<IMillApiClient>());
         Assert.NotNull(scope.ServiceProvider.GetService<MillRealtimeClient>());
+        Assert.NotNull(scope.ServiceProvider.GetService<IMillRealtimeClient>());
     }
 }
