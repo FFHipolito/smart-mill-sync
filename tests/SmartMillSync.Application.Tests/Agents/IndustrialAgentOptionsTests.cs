@@ -11,7 +11,7 @@ public sealed class IndustrialAgentOptionsTests
         var options = new IndustrialAgentOptions();
 
         Assert.Equal("IndustrialAgent", IndustrialAgentOptions.SectionName);
-        Assert.Equal("gemini-2.5-flash", options.ModelId);
+        Assert.Equal("gemini-3.1-flash-lite", options.ModelId);
         Assert.Equal(2.50m, options.GasPricePerNm3);
         Assert.Empty(options.ApiKey);
     }

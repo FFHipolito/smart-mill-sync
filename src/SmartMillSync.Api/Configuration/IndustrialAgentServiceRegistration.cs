@@ -1,6 +1,3 @@
-using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.ChatCompletion;
-using Microsoft.SemanticKernel.Connectors.Google;
 using SmartMillSync.Api.Services;
 using SmartMillSync.Application.Agents;
 using SmartMillSync.Application.Plugins;
@@ -37,14 +34,11 @@ public static class IndustrialAgentServiceRegistration
             return services;
         }
 
-#pragma warning disable SKEXP0070
-        services.AddGoogleAIGeminiChatCompletion(
-            modelId: modelId,
-            apiKey: apiKey,
-            apiVersion: GoogleAIVersion.V1);
-#pragma warning restore SKEXP0070
-        services.AddScoped(provider => new Kernel(provider));
-        services.AddScoped<IIndustrialAgentChatGateway, SemanticKernelChatGateway>();
+        services.AddHttpClient<IIndustrialAgentChatGateway, GeminiRestChatGateway>(client =>
+        {
+            client.BaseAddress = new Uri("https://generativelanguage.googleapis.com/");
+            client.DefaultRequestHeaders.Add("x-goog-api-key", apiKey);
+        });
         return services;
     }
 }

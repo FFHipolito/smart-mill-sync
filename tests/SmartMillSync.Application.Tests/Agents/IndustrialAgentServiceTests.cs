@@ -81,6 +81,8 @@ public sealed class IndustrialAgentServiceTests
     {
         Assert.Contains("ferramentas de telemetria", IndustrialAgentPersona.SystemPrompt);
         Assert.Contains("Nunca invente", IndustrialAgentPersona.SystemPrompt);
+        Assert.Contains("prazos de secagem", IndustrialAgentPersona.SystemPrompt);
+        Assert.Contains("sujeita a validacao do operador", IndustrialAgentPersona.SystemPrompt);
         Assert.Contains("pilhas de secagem natural", IndustrialAgentPersona.SystemPrompt);
     }
 
