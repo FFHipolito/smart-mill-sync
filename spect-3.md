@@ -1,1 +1,0 @@
-Faça o codigo como se vc fosse um senior utilizando as boas praticas e sem usar any. preciso que vc faca cada item em branchs separadas para mergear com a develop e crie sempre arquivos de testes para cada arquivo criado.
