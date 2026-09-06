@@ -11,7 +11,9 @@ public static class ClientServiceRegistration
     {
         services.AddScoped(_ => new HttpClient { BaseAddress = apiBaseAddress });
         services.AddScoped<MillApiClient>();
+        services.AddScoped<IMillApiClient>(provider => provider.GetRequiredService<MillApiClient>());
         services.AddScoped<MillRealtimeClient>();
+        services.AddScoped<IMillRealtimeClient>(provider => provider.GetRequiredService<MillRealtimeClient>());
         return services;
     }
 }

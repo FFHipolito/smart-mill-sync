@@ -3,7 +3,14 @@ using SmartMillSync.Shared.DTOs;
 
 namespace SmartMillSync.Client.Services;
 
-public sealed class MillRealtimeClient : IAsyncDisposable
+public interface IMillRealtimeClient : IAsyncDisposable
+{
+    event Func<WoodDeliveryResponse, Task>? DeliveryUpdated;
+    event Func<EnergyBalanceSummaryDto, Task>? EnergyBalanceUpdated;
+    Task StartAsync(CancellationToken cancellationToken = default);
+}
+
+public sealed class MillRealtimeClient : IMillRealtimeClient
 {
     private readonly HubConnection _connection;
 
