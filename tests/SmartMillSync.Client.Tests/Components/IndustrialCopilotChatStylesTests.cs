@@ -19,6 +19,8 @@ public sealed class IndustrialCopilotChatStylesTests
         Assert.Contains("right: 22px", content);
         Assert.Contains("height: min(560px", content);
         Assert.Contains("@media (max-width: 620px)", content);
+        Assert.Contains("left: 10px", content);
+        Assert.Contains("width: auto", content);
         Assert.Contains(".markdown-content ::deep strong", content);
         Assert.Contains("table-layout: fixed", content);
     }
