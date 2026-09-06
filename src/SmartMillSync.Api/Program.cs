@@ -36,6 +36,12 @@ builder.Services.AddHostedService<ThermalBalanceWorker>();
 
 var app = builder.Build();
 
+await using (var scope = app.Services.CreateAsyncScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<SmartMillDbContext>();
+    await dbContext.Database.EnsureCreatedAsync();
+}
+
 app.UseExceptionHandler();
 if (app.Environment.IsDevelopment())
 {
