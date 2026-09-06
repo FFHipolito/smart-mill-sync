@@ -84,6 +84,7 @@
                         <th>UMIDADE</th>
                         <th>IMPACTO GN</th>
                         <th>STATUS</th>
+                        <th>DIAGNOSTICO</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -100,6 +101,14 @@
                             <td><span class="moisture @AlertCss(delivery.AlertLevel)">@FormatNumber(delivery.MoisturePercentage)%</span></td>
                             <td>@FormatNumber(delivery.ExtraGasVolume) Nm3</td>
                             <td><span class="status">@StatusLabel(delivery.Status)</span></td>
+                            <td>
+                                @if (delivery.AlertLevel == AlertLevel.High)
+                                {
+                                    <button type="button" class="ai-diagnose" @onclick="() => DiagnoseWithAiAsync(delivery)">
+                                        Diagnosticar com IA
+                                    </button>
+                                }
+                            </td>
                         </tr>
                     }
                 </tbody>
@@ -107,6 +116,8 @@
         </div>
     }
 </section>
+
+<IndustrialCopilotChat @ref="_copilot" />
 
 @if (_isFormOpen)
 {
@@ -174,6 +185,7 @@
     private readonly CancellationTokenSource _lifetime = new();
     private EnergyBalanceSummaryDto _summary = new(0, 0m, 0m, 0m, 0m, AlertLevel.Normal);
     private ArrivalFormModel _form = new();
+    private IndustrialCopilotChat? _copilot;
     private bool _isLoading = true;
     private bool _isFormOpen;
     private bool _isSubmitting;
@@ -226,6 +238,9 @@
         _submitError = null;
         _isFormOpen = true;
     }
+
+    private Task DiagnoseWithAiAsync(WoodDeliveryResponse delivery) =>
+        _copilot?.DiagnoseDeliveryAsync(delivery) ?? Task.CompletedTask;
 
     private void CloseForm() => _isFormOpen = false;
 

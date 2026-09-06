@@ -14,6 +14,8 @@ public static class ClientServiceRegistration
         services.AddScoped<IMillApiClient>(provider => provider.GetRequiredService<MillApiClient>());
         services.AddScoped<MillRealtimeClient>();
         services.AddScoped<IMillRealtimeClient>(provider => provider.GetRequiredService<MillRealtimeClient>());
+        services.AddScoped<IndustrialAgentApiClient>();
+        services.AddScoped<IIndustrialAgentApiClient>(provider => provider.GetRequiredService<IndustrialAgentApiClient>());
         return services;
     }
 }

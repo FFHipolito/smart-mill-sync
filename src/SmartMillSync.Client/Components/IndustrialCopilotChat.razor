@@ -1,0 +1,153 @@
+@using Markdig
+@using SmartMillSync.Client.Services
+@using SmartMillSync.Shared.DTOs
+@inject IIndustrialAgentApiClient AgentClient
+@implements IDisposable
+
+<div class="copilot-shell @(_isExpanded ? "is-expanded" : null)">
+    <button type="button" class="copilot-toggle" @onclick="Toggle" aria-expanded="@_isExpanded" aria-controls="industrial-copilot-panel">
+        <span class="oracle-mark" aria-hidden="true">OI</span>
+        <span>
+            <strong>Oraculo Industrial</strong>
+            <small>Gemini / telemetria ativa</small>
+        </span>
+        <span class="toggle-symbol" aria-hidden="true">@(_isExpanded ? "_" : "+")</span>
+    </button>
+
+    @if (_isExpanded)
+    {
+        <section id="industrial-copilot-panel" class="copilot-panel" aria-label="Chat do Oraculo Industrial">
+            <div class="message-list" aria-live="polite">
+                @if (_messages.Count == 0)
+                {
+                    <div class="empty-chat">
+                        <strong>Diagnostico energetico assistido</strong>
+                        <span>Consulte cargas, umidade e compensacao de gas natural.</span>
+                    </div>
+                }
+
+                @foreach (var message in _messages)
+                {
+                    <article class="chat-message @(message.Role == AgentMessageRole.Assistant ? "assistant" : "operator")">
+                        <span class="message-role">@(message.Role == AgentMessageRole.Assistant ? "ANALISE IA" : "OPERADOR")</span>
+                        @if (message.Role == AgentMessageRole.Assistant)
+                        {
+                            <div class="markdown-content">@RenderMarkdown(message.Content)</div>
+                        }
+                        else
+                        {
+                            <p>@message.Content</p>
+                        }
+                    </article>
+                }
+
+                @if (_isBusy)
+                {
+                    <div class="agent-thinking"><i></i><i></i><i></i><span>Analisando telemetria...</span></div>
+                }
+            </div>
+
+            @if (_errorMessage is not null)
+            {
+                <div class="copilot-error" role="alert">@_errorMessage</div>
+            }
+
+            <form @onsubmit="SendAsync" @onsubmit:preventDefault="true">
+                <label for="agent-message">Mensagem ao agente</label>
+                <div class="composer">
+                    <textarea id="agent-message" @bind="_draft" placeholder="Ex.: quais cargas devem ir para secagem?" disabled="@_isBusy"></textarea>
+                    <button type="submit" title="Enviar analise" disabled="@(_isBusy || string.IsNullOrWhiteSpace(_draft))">Enviar</button>
+                </div>
+            </form>
+        </section>
+    }
+</div>
+
+@code {
+    private static readonly MarkdownPipeline MarkdownPipeline = new MarkdownPipelineBuilder()
+        .UseAdvancedExtensions()
+        .DisableHtml()
+        .Build();
+    private readonly List<AgentChatMessageDto> _messages = [];
+    private readonly CancellationTokenSource _lifetime = new();
+    private bool _isExpanded;
+    private bool _isBusy;
+    private string _draft = string.Empty;
+    private string? _errorMessage;
+
+    public async Task DiagnoseDeliveryAsync(WoodDeliveryResponse delivery)
+    {
+        _isExpanded = true;
+        _draft = $"Diagnostique a carga {delivery.TruckPlate} com {delivery.MoisturePercentage:N1}% de umidade.";
+        _messages.Add(new AgentChatMessageDto(AgentMessageRole.User, _draft));
+        _draft = string.Empty;
+        _isBusy = true;
+        _errorMessage = null;
+        await InvokeAsync(StateHasChanged);
+
+        try
+        {
+            var response = await AgentClient.DiagnoseDeliveryAsync(delivery.Id, _lifetime.Token);
+            _messages.Add(new AgentChatMessageDto(AgentMessageRole.Assistant, response.Analysis));
+        }
+        catch (IndustrialAgentApiException exception) when (exception.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
+        {
+            _errorMessage = "Configure GOOGLE_AI_API_KEY na API para habilitar o Gemini.";
+        }
+        catch (Exception) when (!_lifetime.IsCancellationRequested)
+        {
+            _errorMessage = "Nao foi possivel diagnosticar esta carga agora.";
+        }
+        finally
+        {
+            _isBusy = false;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private void Toggle() => _isExpanded = !_isExpanded;
+
+    private async Task SendAsync()
+    {
+        var message = _draft.Trim();
+        if (message.Length == 0 || _isBusy)
+        {
+            return;
+        }
+
+        var history = _messages.ToArray();
+        _messages.Add(new AgentChatMessageDto(AgentMessageRole.User, message));
+        _draft = string.Empty;
+        _isBusy = true;
+        _errorMessage = null;
+
+        try
+        {
+            var response = await AgentClient.ChatAsync(
+                new IndustrialAgentChatRequest(message, history),
+                _lifetime.Token);
+            _messages.Add(new AgentChatMessageDto(AgentMessageRole.Assistant, response.Analysis));
+        }
+        catch (IndustrialAgentApiException exception) when (exception.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
+        {
+            _errorMessage = "Configure GOOGLE_AI_API_KEY na API para habilitar o Gemini.";
+        }
+        catch (Exception) when (!_lifetime.IsCancellationRequested)
+        {
+            _errorMessage = "O agente industrial nao respondeu. Tente novamente.";
+        }
+        finally
+        {
+            _isBusy = false;
+        }
+    }
+
+    private static MarkupString RenderMarkdown(string content) =>
+        new(Markdown.ToHtml(content, MarkdownPipeline));
+
+    public void Dispose()
+    {
+        _lifetime.Cancel();
+        _lifetime.Dispose();
+    }
+}

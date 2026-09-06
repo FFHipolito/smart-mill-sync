@@ -1,0 +1,249 @@
+.copilot-shell {
+    position: fixed;
+    right: 22px;
+    bottom: 20px;
+    z-index: 80;
+    width: min(380px, calc(100vw - 28px));
+    font-family: "IBM Plex Sans", sans-serif;
+}
+
+.copilot-toggle {
+    width: 100%;
+    min-height: 58px;
+    padding: 9px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #131b17;
+    border: 1px solid #435149;
+    border-radius: 4px;
+    color: #eef2ee;
+    box-shadow: 0 12px 34px rgba(0, 0, 0, 0.35);
+    cursor: pointer;
+    text-align: left;
+}
+
+.oracle-mark {
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    border: 1px solid #55c878;
+    color: #6bd58a;
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 700;
+}
+
+.copilot-toggle strong,
+.copilot-toggle small {
+    display: block;
+}
+
+.copilot-toggle strong {
+    font-size: 0.78rem;
+}
+
+.copilot-toggle small {
+    margin-top: 2px;
+    color: #7f8c84;
+    font-size: 0.62rem;
+}
+
+.toggle-symbol {
+    margin-left: auto;
+    color: #6bd58a;
+    font-size: 1rem;
+}
+
+.copilot-panel {
+    height: min(560px, calc(100vh - 110px));
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto auto;
+    background: #19221d;
+    border: 1px solid #435149;
+    border-top: 0;
+    box-shadow: 0 22px 56px rgba(0, 0, 0, 0.48);
+}
+
+.message-list {
+    padding: 14px;
+    overflow-y: auto;
+}
+
+.empty-chat {
+    min-height: 200px;
+    display: grid;
+    place-content: center;
+    gap: 7px;
+    color: #7f8c84;
+    text-align: center;
+    font-size: 0.7rem;
+}
+
+.empty-chat strong {
+    color: #bac5be;
+    font-size: 0.8rem;
+}
+
+.chat-message {
+    margin-bottom: 10px;
+    padding: 10px 11px;
+    border-radius: 3px;
+    font-size: 0.72rem;
+    line-height: 1.5;
+}
+
+.chat-message.operator {
+    margin-left: 28px;
+    background: #25332b;
+    border: 1px solid #3d4b43;
+}
+
+.chat-message.assistant {
+    margin-right: 14px;
+    background: #111814;
+    border-left: 2px solid #55c878;
+}
+
+.message-role {
+    display: block;
+    margin-bottom: 6px;
+    color: #67cf86;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 0.58rem;
+    font-weight: 600;
+}
+
+.chat-message p,
+.markdown-content ::deep p {
+    margin: 0 0 7px;
+}
+
+.markdown-content ::deep p:last-child {
+    margin-bottom: 0;
+}
+
+.markdown-content ::deep strong {
+    display: inline-block;
+    padding: 1px 5px;
+    background: #2c392f;
+    border: 1px solid #52705b;
+    border-radius: 2px;
+    color: #8ee0a5;
+    font-size: 0.65rem;
+}
+
+.markdown-content ::deep table {
+    width: 100%;
+    margin: 8px 0;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.markdown-content ::deep th,
+.markdown-content ::deep td {
+    padding: 5px;
+    border: 1px solid #3b4941;
+    overflow-wrap: anywhere;
+    font-size: 0.64rem;
+}
+
+.markdown-content ::deep th {
+    background: #243028;
+    color: #83d99b;
+}
+
+.agent-thinking {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #829088;
+    font-size: 0.65rem;
+}
+
+.agent-thinking i {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #55c878;
+    animation: agent-pulse 900ms ease-in-out infinite alternate;
+}
+
+.agent-thinking i:nth-child(2) { animation-delay: 150ms; }
+.agent-thinking i:nth-child(3) { animation-delay: 300ms; }
+.agent-thinking span { margin-left: 4px; }
+
+.copilot-error {
+    margin: 0 12px 8px;
+    padding: 8px;
+    background: #402421;
+    border-left: 2px solid #e5675f;
+    color: #f2b4af;
+    font-size: 0.67rem;
+}
+
+.copilot-panel form {
+    padding: 10px;
+    border-top: 1px solid #344039;
+}
+
+.copilot-panel label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+}
+
+.composer {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 7px;
+}
+
+.composer textarea {
+    min-height: 48px;
+    max-height: 110px;
+    resize: vertical;
+    padding: 8px;
+    background: #101713;
+    border: 1px solid #3b4941;
+    border-radius: 2px;
+    color: #eef2ee;
+    font: inherit;
+    font-size: 0.7rem;
+}
+
+.composer button {
+    width: 58px;
+    border: 0;
+    border-radius: 2px;
+    background: #55c878;
+    color: #101713;
+    font-size: 0.67rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.composer button:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+}
+
+@keyframes agent-pulse {
+    from { opacity: 0.25; transform: translateY(1px); }
+    to { opacity: 1; transform: translateY(-1px); }
+}
+
+@media (max-width: 620px) {
+    .copilot-shell {
+        right: 10px;
+        bottom: 10px;
+        width: calc(100vw - 20px);
+    }
+
+    .copilot-panel {
+        height: min(520px, calc(100vh - 82px));
+    }
+}
