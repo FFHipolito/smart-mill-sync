@@ -2,6 +2,10 @@
 
 Plataforma industrial em .NET 8 para sincronizar o recebimento de madeira no patio com o impacto energetico da fabrica. O sistema transforma dados de pesagem e umidade em indicadores operacionais, estima a necessidade adicional de Gas Natural (GN) e oferece diagnosticos assistidos por IA para cargas criticas.
 
+## Aplicacao publicada
+
+Acesse o Smart Mill Sync em [https://smart-mill-sync.vercel.app/](https://smart-mill-sync.vercel.app/).
+
 ## Para que serve
 
 A madeira recebida pela fabrica apresenta variacoes relevantes de umidade. Quanto maior a umidade, menor o rendimento termico da biomassa e maior a necessidade de queima complementar de GN para manter a estabilidade do processo.
